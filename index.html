@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Python String Indexing & Slicing</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{--bg:#f3f6fb;--card:#fff;--ink:#14213d;--mut:#5b6884;--line:#d5dcea;--pos:#0b7a75;--neg:#c2274a;--hi:#ffc933;--hiink:#14213d;--code:#101826;--codeink:#e6edf7;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1522;--card:#17233a;--ink:#eaf0fb;--mut:#9aa8c4;--line:#2a3a58;--pos:#3ddbd0;--neg:#ff7a90;--code:#0a1019}}
+:root[data-theme="dark"]{--bg:#0e1522;--card:#17233a;--ink:#eaf0fb;--mut:#9aa8c4;--line:#2a3a58;--pos:#3ddbd0;--neg:#ff7a90;--code:#0a1019}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Space Grotesk",system-ui,sans-serif}
+main{max-width:920px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:clamp(2rem,6vw,3.4rem);line-height:1.1;margin:.2em 0}
+h2{font-size:1.6rem;margin:0 0 .3em}
+p{max-width:70ch}
+code,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+code{background:var(--line);padding:1px 6px;border-radius:5px;font-size:.9em}
+section{margin-top:56px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.tape{display:flex;gap:6px;overflow-x:auto;padding:22px 4px 14px}
+.cell{flex:0 0 auto;width:54px;text-align:center;cursor:pointer;user-select:none;animation:drop .7s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(var(--i)*70ms)}
+.cell .p,.cell .n{font:700 .8rem "JetBrains Mono",monospace;height:22px}
+.cell .p{color:var(--pos)}.cell .n{color:var(--neg)}
+.cell .t{height:54px;display:grid;place-items:center;font:700 1.6rem "JetBrains Mono",monospace;background:var(--card);border:2px solid var(--ink);border-radius:9px;transition:.25s}
+.cell.sp .t{background:repeating-linear-gradient(45deg,var(--card) 0 5px,var(--line) 5px 10px)}
+.cell:hover .t{transform:translateY(-5px)}
+.cell.on .t{background:var(--hi);color:var(--hiink);border-color:var(--hiink);transform:translateY(-8px) scale(1.08);box-shadow:0 8px 0 -2px var(--ink)}
+.cell .o{height:18px;font:700 .75rem "JetBrains Mono",monospace;color:var(--mut)}
+@keyframes drop{from{opacity:0;transform:translateY(-40px) rotate(-8deg)}to{opacity:1;transform:none}}
+.term{background:var(--code);color:var(--codeink);border-radius:12px;padding:14px 16px;font:500 .95rem/1.7 "JetBrains Mono",monospace;overflow-x:auto;white-space:pre}
+.term .k{color:#7fd6ff}.term .s{color:#ffd479}.term .e{color:#ff8fa3}.term .g{color:#8aa0c4}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:12px 0}
+label{font-size:.85rem;color:var(--mut);display:flex;flex-direction:column;gap:4px}
+input{font:600 1rem "JetBrains Mono",monospace;padding:8px 10px;border:2px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);width:96px}
+input.wide{width:min(260px,100%)}
+input:focus,button:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
+button{font:700 .9rem "Space Grotesk",sans-serif;padding:9px 14px;border-radius:9px;border:2px solid var(--ink);background:var(--card);color:var(--ink);cursor:pointer;transition:.15s}
+button:hover{background:var(--hi);color:var(--hiink);transform:translateY(-2px)}
+button.pri{background:var(--ink);color:var(--bg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:14px}
+.grid .card{transition:.25s}.grid .card:hover{transform:rotate(-1deg) translateY(-4px);border-color:var(--pos)}
+.res{font:700 1.4rem "JetBrains Mono",monospace;min-height:2.2em;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.res span{background:var(--hi);color:var(--hiink);padding:2px 9px;border-radius:7px;animation:pop .4s both;animation-delay:calc(var(--k)*80ms)}
+@keyframes pop{from{transform:scale(0) rotate(20deg)}to{transform:none}}
+.shake{animation:sh .4s}
+@keyframes sh{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left}
+td:first-child{font-family:"JetBrains Mono",monospace;font-weight:700;white-space:nowrap}
+.wrap{overflow-x:auto}
+tbody tr{transition:.2s}tbody tr:hover{background:var(--line)}
+.rv{opacity:0;transform:translateY(24px);transition:.7s}.rv.in{opacity:1;transform:none}
+.opt{display:block;width:100%;text-align:left;margin:6px 0}
+.opt.ok{background:#1f9d55;color:#fff;border-color:#1f9d55}.opt.no{background:var(--neg);color:#fff;border-color:var(--neg)}
+.bar{height:8px;background:var(--line);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--pos);transition:.5s}
+.mut{color:var(--mut)}
+.hero .cell .t{border-color:var(--pos)}
+.res span.pl{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.fb{min-height:1.6em;font-weight:700}.fb.good{color:var(--pos)}.fb.bad{color:var(--neg)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+  <p class="mut mono">Python strings, in detail</p>
+  <h1>Indexing & slicing: read any character, cut any piece</h1>
+  <p>A string is a row of characters, and every character has a numbered seat. Learn the numbering and you can grab one character with <code>s[i]</code> or a whole piece with <code>s[start:stop:step]</code>. Click the tiles below.</p>
+  <div class="card">
+    <div class="tape" id="hero"></div>
+    <div class="term" id="heroOut"><span class="g"># click a tile to see both of its addresses</span></div>
+    <div class="row"><button class="pri" id="sweep">Play the sweep</button><span class="mut">Green counts from the left (0, 1, 2…). Red counts from the right (-1, -2, -3…).</span></div>
+  </div>
+</header>
+
+<section class="rv">
+  <h2>Indexing: one character at a time</h2>
+  <p>Positive indexes start at <b>0</b>, not 1. Negative indexes start at <b>-1</b> for the last character, so <code>s[-1]</code> is always the end, whatever the length. For a string of length <code>n</code>, index <code>-k</code> is the same seat as <code>n-k</code>.</p>
+  <div class="term"><span class="g"># s = "PYTHON"   (len(s) is 6)</span>
+s[0]   <span class="g"># </span><span class="s">'P'</span>       s[-6]  <span class="g"># </span><span class="s">'P'</span>
+s[5]   <span class="g"># </span><span class="s">'N'</span>       s[-1]  <span class="g"># </span><span class="s">'N'</span>
+len(s) - 1 <span class="g"># </span>5   <span class="g">← last valid positive index</span></div>
+  <h3>Break it on purpose</h3>
+  <div class="row"><button data-e="0">s[6]</button><button data-e="1">s[-7]</button><button data-e="2">s[0] = "J"</button><button data-e="3">s[1.5]</button></div>
+  <div class="term" id="err"><span class="g"># press a button to see what Python says</span></div>
+  <h3>Index finder</h3>
+  <div class="card"><div class="row"><label>string<input class="wide" id="fs" value="PYTHON"></label><label>index<input id="fi" type="number" value="2"></label></div>
+  <input type="range" id="fr" value="2" style="width:100%;padding:0;border:0"><div class="tape" id="ftape"></div><div class="term" id="fout"></div></div>
+</section>
+
+<section class="rv">
+  <h2>Slicing: <code>s[start:stop:step]</code></h2>
+  <div class="grid">
+    <div class="card"><b>start</b><br>First index to take. Blank means "from the beginning" (or the end, if step is negative).</div>
+    <div class="card"><b>stop</b><br>The index to stop <i>before</i>. It is never included. <code>s[1:4]</code> gives indexes 1, 2, 3.</div>
+    <div class="card"><b>step</b><br>How far to jump each time. Default 1. Negative walks backwards. Never 0.</div>
+  </div>
+  <p>The trick: think of the numbers as pointing at the <i>lines between tiles</i>. <code>stop</code> is the wall where you halt, so the tile after that wall stays out.</p>
+</section>
+
+<section class="rv">
+  <h2>Slice playground</h2>
+  <p>Type your own string and values. Leave a box empty to omit it. The yellow tiles are what Python picks, in order.</p>
+  <div class="card">
+    <div class="row">
+      <label>string<input class="wide" id="ps" value="PROGRAMMING" maxlength="20"></label>
+      <label>start<input id="pa" value="2" inputmode="numeric"></label>
+      <label>stop<input id="pb" value="8" inputmode="numeric"></label>
+      <label>step<input id="pc" value="" inputmode="numeric"></label>
+    </div>
+    <div class="row" id="presets"></div>
+    <div class="tape" id="ptape"></div>
+    <div class="term" id="pcode"></div>
+    <p class="mut" id="pexp"></p>
+    <div class="res" id="pres"></div>
+  </div>
+</section>
+
+<section class="rv">
+  <h2>Mini Python shell</h2>
+  <p>Type any expression using <code>s</code>, like <code>s[2:5]</code> or <code>s[::-1][:3]</code>. Chained slices work too.</p>
+  <div class="card"><div class="row"><label>s =<input class="wide" id="rs" value="PYTHON PROGRAMMING"></label><label>expression<input class="wide" id="re" value="s[7:]" spellcheck="false"></label><button class="pri" id="rb">Run</button></div>
+  <div class="row" id="rchips"></div><div class="term" id="rt"></div></div>
+</section>
+<section class="rv">
+  <h2>Find the slice challenge</h2>
+  <p>Write a start, stop and step that produce the target. Any correct combination counts.</p>
+  <div class="card"><div class="tape" id="ct"></div>
+  <p>String: <b class="mono" id="cw"></b> &nbsp; Target: <b class="mono" id="cts"></b> &nbsp; Streak: <b id="cs">0</b></p>
+  <div class="row"><label>start<input id="ca" inputmode="numeric"></label><label>stop<input id="cb" inputmode="numeric"></label><label>step<input id="cc" inputmode="numeric"></label>
+  <button class="pri" id="cchk">Check</button><button id="chint">Hint</button><button id="cans">Show one answer</button><button id="cnew">New challenge</button></div>
+  <p class="fb" id="cf"></p></div>
+</section>
+<section class="rv">
+  <h2>String surgery</h2>
+  <p>Strings cannot be edited in place, so cut and rejoin with slices. Pick an action and watch the new string form.</p>
+  <div class="card"><div class="row"><label>string<input class="wide" id="ss" value="PYTHON"></label><label>index<input id="sk" type="number" value="0"></label><label>text<input id="sn" value="J" maxlength="6"></label></div>
+  <div class="row"><button data-m="replace" class="pri">Replace char</button><button data-m="insert">Insert before</button><button data-m="delete">Delete char</button></div>
+  <div class="term" id="sgo"></div><div class="res" id="sgr"></div></div>
+</section>
+<section class="rv">
+  <h2>Negative steps: slicing backwards</h2>
+  <p>With a negative step, Python starts at the <b>end</b> and walks left, so the defaults swap: start becomes the last character and stop becomes "before the first". That is why <code>s[::-1]</code> reverses a string, and why <code>s[1:4:-1]</code> is empty: you cannot walk left from 1 to reach 4.</p>
+  <div class="card"><div class="tape" id="rev"></div><div class="row"><button id="revBtn" class="pri">Animate s[::-1]</button><span class="mut" id="revOut"></span></div></div>
+</section>
+
+<section class="rv">
+  <h2>Patterns you will use daily</h2>
+  <div class="card wrap"><table><thead><tr><th>Slice</th><th>Meaning</th><th>Result for "PYTHON"</th></tr></thead><tbody id="cheat"></tbody></table></div>
+</section>
+
+<section class="rv">
+  <h2>Rules that trip people up</h2>
+  <div class="grid">
+    <div class="card"><b>Slices never crash</b><br>Out-of-range slice values are trimmed silently. <code>"PYTHON"[2:99]</code> gives <code>'THON'</code>. Only single indexing raises <code>IndexError</code>.</div>
+    <div class="card"><b>Strings are immutable</b><br>You can read <code>s[0]</code> but not assign to it. Build a new string: <code>"J" + s[1:]</code>.</div>
+    <div class="card"><b>Split at any point</b><br><code>s[:k] + s[k:]</code> always rebuilds <code>s</code>, for any <code>k</code>.</div>
+  </div>
+</section>
+
+<section class="rv">
+  <h2>Check yourself</h2>
+  <div class="card"><div class="bar"><i id="qbar"></i></div><div id="quiz"></div></div>
+</section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+function sl(n,a,b,c){c=c==null?1:c;if(c===0)return null;const lo=c>0?0:-1,hi=c>0?n:n-1;
+ const f=(v,d)=>{if(v==null)return d;if(v<0){v+=n;if(v<lo)v=lo}else if(v>hi)v=hi;return v};
+ let s=f(a,c>0?lo:hi),e=f(b,c>0?hi:lo),r=[];
+ if(c>0)for(let i=s;i<e;i+=c)r.push(i);else for(let i=s;i>e;i+=c)r.push(i);return r}
+function tape(el,str,extra){el.innerHTML='';[...str].forEach((ch,i)=>{const d=document.createElement('div');
+ d.className='cell'+(ch===' '?' sp':'');d.style.setProperty('--i',i);
+ d.innerHTML=`<div class="p">${i}</div><div class="t">${ch===' '?'&nbsp;':ch.replace('&','&amp;').replace('<','&lt;')}</div><div class="n">${i-str.length}</div><div class="o"></div>`;
+ el.appendChild(d)});return[...el.children]}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* hero */
+const S='PYTHON';const hc=tape($('#hero'),S);
+hc.forEach((c,i)=>c.onclick=()=>{hc.forEach(x=>x.classList.remove('on'));c.classList.add('on');
+ $('#heroOut').innerHTML=`s[<span class="k">${i}</span>]   → <span class="s">'${S[i]}'</span>\ns[<span class="e">${i-S.length}</span>] → <span class="s">'${S[i]}'</span>   <span class="g"># same tile, two addresses</span>`});
+$('#sweep').onclick=async()=>{for(let i=0;i<S.length;i++){hc[i].click();await wait(450)}
+ for(let i=S.length-1;i>=0;i--){hc[i].click();await wait(350)}};
+
+/* errors */
+const E=[['s[6]','IndexError: string index out of range','Valid indexes are 0 to 5.'],
+['s[-7]','IndexError: string index out of range','Negative side stops at -6.'],
+['s[0] = "J"',"TypeError: 'str' object does not support item assignment",'Strings cannot be changed in place.'],
+['s[1.5]','TypeError: string indices must be integers, not \'float\'','Indexes must be int.']];
+document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{const e=E[b.dataset.e],t=$('#err');
+ t.innerHTML=`<span class="g">&gt;&gt;&gt; </span>${e[0]}\n<span class="e">${e[1]}</span>\n<span class="g"># ${e[2]}</span>`;
+ t.classList.remove('shake');void t.offsetWidth;t.classList.add('shake')});
+
+/* playground */
+const pv=id=>{const v=$(id).value.trim();if(v==='')return null;const n=parseInt(v,10);return isNaN(n)?null:n};
+function play(){const str=$('#ps').value,a=pv('#pa'),b=pv('#pb'),c=pv('#pc');
+ const cells=tape($('#ptape'),str);const idx=sl(str.length,a,b,c);
+ const parts=[a,b,c].map(v=>v==null?'':v);let code=c==null?`s[${parts[0]}:${parts[1]}]`:`s[${parts[0]}:${parts[1]}:${parts[2]}]`;
+ if(idx===null){$('#pcode').innerHTML=`<span class="e">ValueError: slice step cannot be zero</span>`;$('#pres').innerHTML='';$('#pexp').textContent='A step of 0 would never move, so Python refuses.';return}
+ idx.forEach((i,k)=>{setTimeout(()=>{cells[i].classList.add('on');cells[i].querySelector('.o').textContent='#'+(k+1)},250+k*140)});
+ const out=idx.map(i=>str[i]).join('');
+ $('#pcode').innerHTML=`<span class="g">&gt;&gt;&gt; </span>s = <span class="s">"${str}"</span>\n<span class="g">&gt;&gt;&gt; </span>${code}\n<span class="s">'${out}'</span>`;
+ $('#pres').innerHTML=out?[...out].map((ch,k)=>`<span style="--k:${k}">${ch===' '?'␣':ch}</span>`).join(''):'<span class="mut" style="background:none">empty string</span>';
+ const st=c==null?1:c;$('#pexp').textContent=idx.length?`Step ${st} picks ${idx.length} tile(s): indexes ${idx.join(', ')}.`:'No tile is reachable with these values, so the result is an empty string, not an error.'}
+['pa','pb','pc','ps'].forEach(i=>$('#'+i).addEventListener('input',play));
+[['[2:8]','PROGRAMMING',2,8,''],['[::2]','PROGRAMMING','','',2],['[::-1]','PROGRAMMING','','',-1],['[-3:]','PROGRAMMING',-3,'',''],['[:-3]','PROGRAMMING','',-3,''],['[8:2:-2]','PROGRAMMING',8,2,-2],['[1:4:-1]','PROGRAMMING',1,4,-1]]
+.forEach(p=>{const b=document.createElement('button');b.textContent='s'+p[0];b.onclick=()=>{$('#ps').value=p[1];$('#pa').value=p[2];$('#pb').value=p[3];$('#pc').value=p[4];play()};$('#presets').appendChild(b)});
+play();
+
+/* reverse */
+const rc=tape($('#rev'),'STRING');
+$('#revBtn').onclick=async()=>{$('#revOut').textContent='';rc.forEach(c=>{c.classList.remove('on');c.querySelector('.o').textContent=''});let o='';
+ for(let k=0;k<6;k++){const i=5-k;rc[i].classList.add('on');rc[i].querySelector('.o').textContent='#'+(k+1);o+='STRING'[i];$('#revOut').textContent="result so far: '"+o+"'";await wait(600)}};
+
+/* cheat sheet */
+const C=[['s[:3]','First 3 characters',[null,3]],['s[3:]','Everything from index 3',[3,null]],['s[-3:]','Last 3 characters',[-3,null]],['s[:-1]','All but the last',[null,-1]],
+['s[1:-1]','Trim both ends',[1,-1]],['s[::2]','Every 2nd, from the start',[null,null,2]],['s[1::2]','Every 2nd, from index 1',[1,null,2]],['s[::-1]','Reverse',[null,null,-1]],
+['s[::-2]','Reverse, every 2nd',[null,null,-2]],['s[2:99]','Stop far past the end',[2,99]],['s[4:2]','Start after stop',[4,2]]];
+$('#cheat').innerHTML=C.map(r=>{const x=sl(6,...r[2]).map(i=>S[i]).join('');return`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="mono">'${x}'</td></tr>`}).join('');
+
+/* quiz */
+const Q=[['With s = "PYTHON", what is s[-2]?',["'N'","'O'","'H'","IndexError"],1,'-1 is N, so -2 is O.'],
+['What does s[1:4] return?',["'YTHO'","'PYTH'","'YTH'","'YT'"],2,'Indexes 1, 2, 3. Stop (4) is excluded.'],
+['What does s[::-1] return?',["'NOHTYP'","'PYTHON'","'NOHTY'","Error"],0,'Negative step walks from the end to the start.'],
+['What does s[10:] return?',["IndexError","'N'","None","'' (empty string)"],3,'Slices trim out-of-range values and never raise.'],
+['What does s[4:1] return?',["'OHT'","'' (empty string)","'HTY'","ValueError"],1,'Step is +1, so it cannot go from 4 back to 1.']];
+let qi=0,sc=0;
+function ask(){const q=Q[qi];$('#qbar').style.width=(qi/Q.length*100)+'%';
+ if(!q){$('#qbar').style.width='100%';$('#quiz').innerHTML=`<h3>Score: ${sc} / ${Q.length}</h3><p>${sc===Q.length?'Perfect. You can read any slice at a glance.':'Head back to the playground and try the ones you missed.'}</p><button class="pri" id="again">Try again</button>`;$('#again').onclick=()=>{qi=0;sc=0;ask()};return}
+ $('#quiz').innerHTML=`<p><b>${qi+1}. ${q[0]}</b></p>`+q[1].map((o,i)=>`<button class="opt mono" data-i="${i}">${o}</button>`).join('')+'<p class="mut" id="fb"></p>';
+ document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;document.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+  document.querySelectorAll('.opt')[q[2]].classList.add('ok');if(i!==q[2]){b.classList.add('no','shake')}else sc++;
+  $('#fb').textContent=q[3];const n=document.createElement('button');n.className='pri';n.textContent=qi<Q.length-1?'Next question':'See score';n.onclick=()=>{qi++;ask()};$('#fb').after(n)})}
+ask();
+
+
+const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const rerun=el=>{el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake')};
+/* index finder */
+let flast=null;
+function fnd(){const s=$('#fs').value,n=s.length,r=$('#fr');r.min=-n-1;r.max=n;let cells;
+ if(flast!==s){cells=tape($('#ftape'),s);flast=s}else{cells=[...$('#ftape').children];cells.forEach(c=>c.classList.remove('on'))}
+ const i=parseInt($('#fi').value,10),o=$('#fout');
+ if(isNaN(i)){o.innerHTML='<span class="g"># type a whole number</span>';return}
+ if(i>=-n&&i<n){const k=i<0?i+n:i;cells[k].classList.add('on');o.innerHTML=`<span class="g">&gt;&gt;&gt; </span>s[${i}]\n<span class="s">'${esc(s[k])}'</span>   <span class="g"># seat ${k} from the left, ${k-n} from the right</span>`}
+ else{o.innerHTML=`<span class="g">&gt;&gt;&gt; </span>s[${i}]\n<span class="e">IndexError: string index out of range</span>\n<span class="g"># valid range is ${-n} to ${n-1}</span>`;rerun(o)}}
+$('#fi').oninput=()=>{$('#fr').value=$('#fi').value;fnd()};$('#fr').oninput=()=>{$('#fi').value=$('#fr').value;fnd()};$('#fs').oninput=fnd;fnd();
+
+/* mini shell */
+function ev(s,e){e=e.trim();if(e==='len(s)')return{v:s.length};
+ if(!/^s(\[[^\]]*\])+$/.test(e))return{err:'SyntaxError: try s[i], s[a:b], s[a:b:c] or len(s)'};
+ let cur=s;for(const m of e.matchAll(/\[([^\]]*)\]/g)){const p=m[1].split(':').map(x=>x.trim());
+  if(p.length>3)return{err:'SyntaxError: a slice has at most 3 parts'};
+  for(const x of p)if(x!==''&&!/^[-+]?\d+$/.test(x))return{err:/^[-+]?\d*\.\d+$/.test(x)?'TypeError: indices must be integers':'NameError: only whole numbers are allowed here'};
+  const q=p.map(x=>x===''?null:parseInt(x,10));
+  if(p.length===1){if(q[0]==null)return{err:'SyntaxError: empty index'};const n=cur.length,i=q[0];if(i<-n||i>=n)return{err:'IndexError: string index out of range'};cur=cur[i<0?i+n:i]}
+  else{const ix=sl(cur.length,...q);if(ix===null)return{err:'ValueError: slice step cannot be zero'};cur=ix.map(i=>cur[i]).join('')}}
+ return{v:"'"+cur+"'"}}
+const hist=[];
+function run(){const s=$('#rs').value,e=$('#re').value;if(!e.trim())return;const r=ev(s,e);
+ hist.push(`<span class="g">&gt;&gt;&gt; </span>${esc(e)}\n`+(r.err?`<span class="e">${esc(r.err)}</span>`:`<span class="s">${esc(r.v)}</span>`));
+ if(hist.length>6)hist.shift();$('#rt').innerHTML=`<span class="g"># s = "${esc(s)}"</span>\n`+hist.join('\n');$('#re').select()}
+$('#rb').onclick=run;$('#re').onkeydown=e=>{if(e.key==='Enter')run()};
+['s[0]','s[-1]','s[7:]','s[:6]','s[::-1]','s[::2]','s[-11:-1]','s[3:99]','s[7:][::-1]','s[99]','len(s)'].forEach(x=>{const b=document.createElement('button');b.textContent=x;b.onclick=()=>{$('#re').value=x;run()};$('#rchips').appendChild(b)});
+run();
+
+/* challenge */
+const W=['PROGRAMMING','ALGORITHM','JAVASCRIPT','COMPUTER','DEVELOPER','KEYBOARD'];let T,streak=0;
+const rnd=n=>Math.floor(Math.random()*n);
+const fmt=(a,b,c)=>`s[${a??''}:${b??''}${c==null?'':':'+c}]`;
+function newCh(){const w=W[rnd(W.length)],n=w.length;let idx,c,a,b;
+ do{c=[1,1,2,3,-1,-2][rnd(6)];a=rnd(3)?rnd(2*n)-n:null;b=rnd(3)?rnd(2*n)-n:null;idx=sl(n,a,b,c)}while(idx.length<2||idx.length>6);
+ T={w,t:idx.map(i=>w[i]).join(''),idx,code:fmt(a,b,c==1?null:c)};
+ tape($('#ct'),w);$('#cw').textContent=w;$('#cts').textContent="'"+T.t+"'";['ca','cb','cc'].forEach(i=>$('#'+i).value='');$('#cf').textContent='';$('#cf').className='fb'}
+$('#cnew').onclick=newCh;
+$('#chint').onclick=()=>[...$('#ct').children].forEach((c,i)=>c.classList.toggle('on',T.idx.includes(i)));
+$('#cans').onclick=()=>{streak=0;$('#cs').textContent=0;$('#cf').className='fb';$('#cf').textContent='One answer: '+T.code}
+$('#cchk').onclick=()=>{const cells=[...$('#ct').children];cells.forEach(x=>x.classList.remove('on'));
+ const a=pv('#ca'),b=pv('#cb'),c=pv('#cc'),ix=sl(T.w.length,a,b,c),f=$('#cf');
+ if(ix===null){f.className='fb bad';f.textContent='A step of 0 is not allowed.';return}
+ ix.forEach((i,k)=>setTimeout(()=>cells[i].classList.add('on'),k*120));const out=ix.map(i=>T.w[i]).join('');
+ if(out===T.t){streak++;f.className='fb good';f.textContent=`Correct: ${fmt(a,b,c)} gives '${out}'.`}
+ else{streak=0;f.className='fb bad';f.textContent=`${fmt(a,b,c)} gives '${out}', not '${T.t}'. Yellow tiles show what it picked.`}
+ $('#cs').textContent=streak};
+newCh();
+
+/* surgery */
+let sm='replace';
+function surg(){const s=$('#ss').value,n=s.length,t=$('#sn').value,k=parseInt($('#sk').value,10),o=$('#sgo'),r=$('#sgr');r.innerHTML='';
+ if(isNaN(k)){o.textContent='Type a whole number for the index.';return}
+ const q=k<0?k+n:k;
+ if(q<0||q>(sm==='insert'?n:n-1)){o.innerHTML=`<span class="e">IndexError: index ${k} is outside this string</span>`;rerun(o);return}
+ const L=s.slice(0,q);let M=t,R,code;
+ if(sm==='replace'){R=s.slice(q+1);code=`s[:${q}] + "${t}" + s[${q+1}:]`}
+ else if(sm==='insert'){R=s.slice(q);code=`s[:${q}] + "${t}" + s[${q}:]`}
+ else{M='';R=s.slice(q+1);code=`s[:${q}] + s[${q+1}:]`}
+ const out=L+M+R;
+ o.innerHTML=`<span class="g">&gt;&gt;&gt; </span>${esc(code)}\n<span class="s">'${esc(out)}'</span>\n<span class="g"># s is still "${esc(s)}": a new string was built</span>`;
+ let k2=0;r.innerHTML=[...L].map(c=>`<span class="pl" style="--k:${k2++}">${esc(c)}</span>`).join('')+[...M].map(c=>`<span style="--k:${k2++}">${esc(c)}</span>`).join('')+[...R].map(c=>`<span class="pl" style="--k:${k2++}">${esc(c)}</span>`).join('')}
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{sm=b.dataset.m;document.querySelectorAll('[data-m]').forEach(x=>x.classList.toggle('pri',x===b));surg()});
+['ss','sk','sn'].forEach(i=>$('#'+i).addEventListener('input',surg));surg();
+
+/* scroll reveal */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
+document.querySelectorAll('.rv').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>
